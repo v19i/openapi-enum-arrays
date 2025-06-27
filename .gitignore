@@ -1,0 +1,99 @@
+# Node.js
+# Logs and Diagnostics
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime and Process Data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage and Instrumentation
+lib-cov
+coverage
+*.lcov
+.nyc_output
+
+# Build and Dependency Directories
+node_modules/
+jspm_packages/
+web_modules/
+build/Release
+bower_components
+
+# Caches and Temporary Files
+.grunt
+.npm
+.eslintcache
+.stylelintcache
+.cache
+.parcel-cache
+
+# Environment and Configuration
+.env
+.env.*
+!.env.example
+.yarn-integrity
+
+# Framework-Specific Outputs
+.next
+out
+.nuxt
+dist
+.vuepress/dist
+**/.vitepress/dist
+.docusaurus
+
+# Other Development Artifacts
+*.tsbuildinfo
+*.tgz
+.node_repl_history
+.lock-wscript
+
+# Tool-Specific Directories
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+
+# Yarn v3 Specific
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# macOS
+# General macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# Volume and system-related files
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Remote AFP share directories
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk

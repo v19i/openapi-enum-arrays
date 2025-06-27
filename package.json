@@ -1,0 +1,63 @@
+{
+  "name": "@v19i/openapi-enum-arrays",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A @hey-api/openapi-ts plugin that generates typed enum arrays with intelligent conflict resolution",
+  "author": "v19i",
+  "license": "MIT",
+  "homepage": "https://github.com/v19i/openapi-enum-arrays#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v19i/openapi-enum-arrays.git"
+  },
+  "bugs": {
+    "url": "https://github.com/v19i/openapi-enum-arrays/issues"
+  },
+  "keywords": [
+    "openapi",
+    "typescript",
+    "enum",
+    "arrays",
+    "plugin",
+    "hey-api",
+    "code-generation",
+    "api",
+    "types"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src tests --ext .ts",
+    "format": "prettier --write src tests",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@hey-api/openapi-ts": "^0.66.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
