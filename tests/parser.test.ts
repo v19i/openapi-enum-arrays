@@ -88,54 +88,128 @@ export type MixedQuotes = "double" | 'single' | \`backtick\`;
       expect(result[0].values).toEqual(['double', 'single', 'backtick'])
     })
 
-    test('handles complex nested enum types', () => {
+    test('handles various nesting levels and array patterns', () => {
       const content = `
-export type ApiEndpointData = {
+export type NestedTestData = {
+    // 1-level: direct property
+    mode?: 'dev' | 'prod';
+    
+    // 2-level: nested query parameters  
     query?: {
-        tags?: Array<'tag1' | 'tag2' | 'tag3' | 'tag4'>;
+        tags?: Array<'tag1' | 'tag2' | 'tag3'>;
         sort?: 'name' | 'popularity';
-        integration?: 'service1' | 'service2';
+        status?: 'active' | 'inactive';
+    };
+    
+    // 3-level: deeply nested
+    config?: {
+        database?: {
+            type?: 'mysql' | 'postgres' | 'sqlite';
+        };
     };
 };
       `.trim()
 
       const result = parser.parseEnumsFromTypeFile(content)
 
-      expect(result).toHaveLength(3)
-
-      // Check that we got arrays with the right values, names can vary with semantic naming
-      expect(result.some((e) => e.values.join(',') === 'tag1,tag2,tag3,tag4')).toBe(true)
-      expect(result.some((e) => e.values.join(',') === 'name,popularity')).toBe(true)
-      expect(result.some((e) => e.values.join(',') === 'service1,service2')).toBe(true)
+      expect(result.length).toBe(5)
+      
+      // Test all nesting patterns in one comprehensive test
+      expect(result.some((e) => e.values.join(',') === 'dev,prod' && e.originalTypePath === 'NestedTestData.mode')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'tag1,tag2,tag3' && e.originalTypePath === 'NestedTestData.query.tags')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'name,popularity' && e.originalTypePath === 'NestedTestData.query.sort')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'active,inactive' && e.originalTypePath === 'NestedTestData.query.status')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'mysql,postgres,sqlite' && e.originalTypePath === 'NestedTestData.config.database.type')).toBe(true)
     })
 
-
-    test('handles complex OpenAPI-style paths', () => {
+    test('handles real-world API structure with JSDoc comments', () => {
       const content = `
-export type GetV1UsersData = {
-    query?: {
-        role?: 'admin' | 'user' | 'guest';
-        status?: 'active' | 'suspended';
+export type GetApiResourcesData = {
+    body?: never;
+    headers?: {
+        'X-API-Version'?: string;
     };
+    path: {
+        resourceId: string;
+    };
+    query?: {
+        /**
+         * Sort results by field
+         */
+        sortBy?: 'name' | 'createdAt' | 'updatedAt';
+        /**
+         * The order of the sort.
+         */
+        sortOrder?: 'asc' | 'desc';
+        /**
+         * Filter by status
+         */
+        status?: 'active' | 'inactive' | 'pending';
+    };
+    url: '/api/resources/{resourceId}';
 };
-export type PostV1UsersData = {
-    body: {
-        role?: 'editor' | 'viewer';
-        status?: 'pending' | 'approved';
+      `.trim()
+
+      const result = parser.parseEnumsFromTypeFile(content)
+
+      expect(result.length).toBe(3)
+      
+      expect(result.some((e) => e.values.join(',') === 'name,createdAt,updatedAt' && e.originalTypePath === 'GetApiResourcesData.query.sortBy')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'asc,desc' && e.originalTypePath === 'GetApiResourcesData.query.sortOrder')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'active,inactive,pending' && e.originalTypePath === 'GetApiResourcesData.query.status')).toBe(true)
+    })
+
+    test('handles JSDoc annotations like @deprecated', () => {
+      const content = `
+export type ApiWithAnnotations = {
+    query?: {
+        /**
+         * Page index to return
+         * @deprecated Use page instead
+         */
+        pageIndex?: number;
+        /**
+         * Sort order
+         * @param order The direction
+         */
+        sortOrder?: 'asc' | 'desc';
+        /**
+         * Filter status
+         * @example 'active'
+         */
+        status?: 'active' | 'inactive';
     };
 };
       `.trim()
 
       const result = parser.parseEnumsFromTypeFile(content)
 
-      // Should extract meaningful context from nested paths
-      expect(
-        result.some((e) => e.values.join(',') === 'admin,user,guest' && e.originalTypePath.includes('GetV1UsersData')),
-      ).toBe(true)
-
-      expect(
-        result.some((e) => e.values.join(',') === 'editor,viewer' && e.originalTypePath.includes('PostV1UsersData')),
-      ).toBe(true)
+      expect(result.length).toBe(2)
+      
+      // Should extract enums even with JSDoc annotations present
+      expect(result.some((e) => e.values.join(',') === 'asc,desc' && e.originalTypePath === 'ApiWithAnnotations.query.sortOrder')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'active,inactive' && e.originalTypePath === 'ApiWithAnnotations.query.status')).toBe(true)
     })
+
+    test('handles URL templates with braces that should not be treated as nested objects', () => {
+      const content = `
+export type RealWorldApiData = {
+    query?: {
+        sortBy?: 'name' | 'date' | 'priority';
+        sortOrder?: 'asc' | 'desc';
+    };
+    url: '/api/resources/{resourceId}/items/{itemId}';
+};
+      `.trim()
+
+      const result = parser.parseEnumsFromTypeFile(content)
+
+      expect(result.length).toBe(2)
+      
+      // Should extract enums from query even when URL contains braces
+      expect(result.some((e) => e.values.join(',') === 'name,date,priority' && e.originalTypePath === 'RealWorldApiData.query.sortBy')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'asc,desc' && e.originalTypePath === 'RealWorldApiData.query.sortOrder')).toBe(true)
+    })
+
   })
 })

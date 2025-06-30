@@ -76,23 +76,41 @@ examples/
 
 ## Coding Style
 
+- **Comments and Documentation**
+  - **Avoid low-value comments** that simply restate what the code does
+  - Code should be **self-documenting** through descriptive variable and method names
+  - Only add comments when they provide genuine insight or context that isn't obvious from the code
+  - Remove redundant comments like "Handle closing braces" or "Check for type definition"
+
+- **Naming and Structure**
+  - Use **descriptive names** for variables, methods, and classes
+  - Prefer composition and single-responsibility principles
+  - Focus on making code readable without relying on comments
+
+- **Business References**
+  - Keep code **generic and reusable** - avoid references to specific companies or APIs
+  - Use generic examples in tests (e.g., "resource", "company", "service" instead of specific names)
+  - Ensure code is suitable for open-source contribution
+
 - **Import Style**: Use separate `import` and `import type` declarations
+
   ```typescript
   // Good ✅
-  import { CodeGenerator } from './generator'
-  import type { EnumInfo } from './types'
-  
+  import { CodeGenerator } from "./generator";
+  import type { EnumInfo } from "./types";
+
   // Bad ❌
-  import { type EnumInfo, CodeGenerator } from './module'
+  import { type EnumInfo, CodeGenerator } from "./module";
   ```
 
 - **Destructuring**: Keep unused variables with underscore prefix for documentation
+
   ```typescript
   // Good ✅ - shows complete structure
-  const [_fullMatch, _method, _resource, section, _field] = openApiMatch
-  
+  const [_fullMatch, _method, _resource, section, _field] = openApiMatch;
+
   // Bad ❌ - hides available data
-  const [, , , section] = openApiMatch
+  const [, , , section] = openApiMatch;
   ```
 
 - **Early Return**: Prefer return/escape early to minimize nesting
@@ -115,12 +133,12 @@ When testing private methods, create proper types instead of using `any`:
 ```typescript
 // Good ✅
 type CodeGeneratorWithPrivates = CodeGenerator & {
-  extractContextForConflict(path: string): string | null
-}
-const generator = new CodeGenerator() as CodeGeneratorWithPrivates
+  extractContextForConflict(path: string): string | null;
+};
+const generator = new CodeGenerator() as CodeGeneratorWithPrivates;
 
 // Bad ❌
-const generator = new CodeGenerator() as any
+const generator = new CodeGenerator() as any;
 ```
 
 ## Plugin Architecture
@@ -142,6 +160,7 @@ This plugin follows the @hey-api/openapi-ts plugin pattern:
 ### Context Extraction
 
 Extract meaningful context from OpenAPI paths:
+
 - `GetV1ResourcesData.query.type` → `queryTypes`
 - `PostV1ResourcesData.body.type` → `requestTypes`
 - `ResponseData.type` → `responseTypes`
