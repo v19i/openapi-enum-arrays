@@ -211,5 +211,46 @@ export type RealWorldApiData = {
       expect(result.some((e) => e.values.join(',') === 'asc,desc' && e.originalTypePath === 'RealWorldApiData.query.sortOrder')).toBe(true)
     })
 
+    test('handles complex API request structure with query parameters', () => {
+      const content = `
+export type GetApiResourcesData = {
+    body?: never;
+    headers?: {
+        'X-API-Version'?: string;
+    };
+    path: {
+        resourceId: ResourceIdParameter;
+    };
+    query?: {
+        /**
+         * The number of items per page.
+         */
+        pageSize?: number | null;
+        /**
+         * The page number.
+         */
+        page?: number;
+        /**
+         * Sort results by field or activity type.
+         */
+        sortBy?: 'activityCount' | 'createdAt' | 'updatedAt';
+        /**
+         * The order of the sort.
+         */
+        sortOrder?: 'asc' | 'desc';
+    };
+    url: '/api/resources/{resourceId}/items';
+};
+      `.trim()
+
+      const result = parser.parseEnumsFromTypeFile(content)
+
+      expect(result.length).toBe(2)
+      
+      // Should extract both sortBy and sortOrder enums
+      expect(result.some((e) => e.values.join(',') === 'activityCount,createdAt,updatedAt' && e.originalTypePath === 'GetApiResourcesData.query.sortBy')).toBe(true)
+      expect(result.some((e) => e.values.join(',') === 'asc,desc' && e.originalTypePath === 'GetApiResourcesData.query.sortOrder')).toBe(true)
+    })
+
   })
 })

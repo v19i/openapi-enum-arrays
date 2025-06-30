@@ -87,11 +87,11 @@ class PropertyDetector {
   }
 
   extractUnionTypeProperty(line: string): { propertyName: string; typeDefinition: string } | null {
-    const unionPropertyMatch = line.match(/(\w+)\??\s*:\s*([^;,{}]+)/)
+    const unionPropertyMatch = line.match(/(\w+)\??\s*:\s*(.+?)(?:[;,]|$)/)
     if (unionPropertyMatch) {
       return {
         propertyName: unionPropertyMatch[1],
-        typeDefinition: unionPropertyMatch[2]
+        typeDefinition: unionPropertyMatch[2].trim()
       }
     }
     return null
