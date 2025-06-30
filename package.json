@@ -1,6 +1,6 @@
 {
   "name": "@v19i/openapi-enum-arrays",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "A @hey-api/openapi-ts plugin that generates typed enum arrays with intelligent conflict resolution",
   "author": "v19i",
