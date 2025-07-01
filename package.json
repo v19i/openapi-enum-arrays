@@ -1,6 +1,6 @@
 {
   "name": "@v19i/openapi-enum-arrays",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "A @hey-api/openapi-ts plugin that generates typed enum arrays with intelligent conflict resolution",
   "author": "v19i",
@@ -40,7 +40,8 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "tidy": "npm run lint && npm run format"
   },
   "peerDependencies": {
     "@hey-api/openapi-ts": "^0.66.4"
