@@ -14,7 +14,7 @@ npm install @hey-api/openapi-ts @v19i/openapi-enum-arrays
 npx openapi-ts
 ```
 
-3. Check the generated `src/client/enums.ts` file for the enum arrays.
+3. Check the generated `src/client/enums.gen.ts` file for the enum arrays.
 
 ## Expected Output
 

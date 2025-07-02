@@ -7,7 +7,7 @@ export const defaultConfig: Plugin.Config<Config> = {
   _handler: handler,
   _handlerLegacy: () => {},
   name: "enum-arrays",
-  output: "enums",
+  output: "enums.gen",
   debug: false,
   arrayPrefix: "",
 };
